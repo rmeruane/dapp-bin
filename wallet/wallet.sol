@@ -8,9 +8,10 @@
 // use modifiers onlyowner (just own owned) or onlymanyowners(hash), whereby the same hash must be provided by
 // some number (specified in constructor) of the set of owners (specified in the constructor, modifiable) before the
 // interior is executed.
+pragma solidity ^0.4.2;
 contract multiowned {
 
-	// TYPES
+    // TYPES
 
     // struct for the status of a pending operation.
     struct PendingState {
@@ -19,7 +20,7 @@ contract multiowned {
         uint index;
     }
 
-	// EVENTS
+    // EVENTS
 
     // this contract only has six types of events: it can accept a confirmation, in which case
     // we record owner and operation (hash) alongside it.
@@ -32,22 +33,22 @@ contract multiowned {
     // the last one is emitted if the required signatures change
     event RequirementChanged(uint newRequirement);
 
-	// MODIFIERS
+    // MODIFIERS
 
     // simple single-sig function modifier.
     modifier onlyowner {
         if (isOwner(msg.sender))
-            _
+            _;
     }
     // multi-sig function modifier: the operation must have an intrinsic hash in order
     // that later attempts can be realised as the same underlying operation and
     // thus count as confirmations.
     modifier onlymanyowners(bytes32 _operation) {
         if (confirmAndCheck(_operation))
-            _
+            _;
     }
 
-	// METHODS
+    // METHODS
 
     // constructor is given number of sigs required to do protected "onlymanyowners" transactions
     // as well as the selection of addresses capable of confirming them.
@@ -206,7 +207,7 @@ contract multiowned {
         delete m_pendingIndex;
     }
         
-   	// FIELDS
+    // FIELDS
 
     // the number of owners that must confirm the same operation before it is run.
     uint public m_required;
@@ -226,7 +227,7 @@ contract multiowned {
 // interface contract for multisig proxy contracts; see below for docs.
 contract multisig {
 
-	// EVENTS
+    // EVENTS
 
     // logged events:
     // Funds has arrived into the wallet (record how much).
@@ -251,7 +252,7 @@ contract multisig {
 // Wallet(w).from(anotherOwner).confirm(h);
 contract Wallet is multisig, multiowned {
 
-	// TYPES
+    // TYPES
 
     // Transaction structure to remember details of transaction lest it need be saved for a later call.
     struct Transaction {
@@ -315,7 +316,7 @@ contract Wallet is multisig, multiowned {
         super.clearPending();
     }
 
-	// FIELDS
+    // FIELDS
 
     // pending transactions we have at present.
     mapping (bytes32 => Transaction) m_txs;
